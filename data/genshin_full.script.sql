@@ -46,9 +46,17 @@ CREATE TABLE
 CREATE TABLE
   "users" ("id" INTEGER, "name" TEXT, "uid" INTEGER, PRIMARY KEY ("id" AUTOINCREMENT));
 
+CREATE TABLE
+  "user_characters" (
+    "id" INTEGER,
+    "user_id" INTEGER,
+    "character_id" INTEGER,
+    PRIMARY KEY ("id" AUTOINCREMENT),
+    FOREIGN KEY ("character_id") REFERENCES "characters" ("id") ON DELETE SET NULL,
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE SET NULL
+  );
 
 -- ! DATA ! --
-
 INSERT INTO
   "elements" (name, icon)
 VALUES
