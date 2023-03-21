@@ -7,7 +7,6 @@ export class WishHistoryController {
 
   @Get()
   public async findAll() {
-    // return this.wishHistoryService.findAll();
-    return 'this returns things'
+    return this.wishHistoryService.findAll();
   }
 }
