@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '../database/database.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { WishHistoryController } from './wish-history.controller';
 import { wishHistoryProviders } from './wish-history.provider';
 import { WishHistoryService } from './wish-history.service';
-import { WishHistoryController } from './wish-history.controller';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...wishHistoryProviders, WishHistoryService],
+  imports: [TypeOrmModule],
+  providers: [
+    // ...wishHistoryProviders, 
+    WishHistoryService
+  ],
   controllers: [WishHistoryController],
 })
 export class WishHistoryModule {}

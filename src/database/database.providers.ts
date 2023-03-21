@@ -7,7 +7,7 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'sqlite',
-        database: '../../data/genshin.db',
+        database: '/data/genshin.db',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: false,
       });
