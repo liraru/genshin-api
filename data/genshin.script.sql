@@ -60,5 +60,5 @@ CREATE TABLE
     "Group" INTEGER,
     "Title" TEXT,
     "Part" TEXT,
-    PRIMARY KEY ("Banner", "Roll","Pity", "Time", "Name")
+    PRIMARY KEY ("Banner", "Roll", "Pity", "Time", "Name")
   )
