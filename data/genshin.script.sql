@@ -47,3 +47,18 @@ CREATE TABLE
     FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE SET NULL,
     PRIMARY KEY ("id" AUTOINCREMENT)
   );
+
+CREATE TABLE
+  "user_wish_history" (
+    "Banner" TEXT,
+    "Type" TEXT,
+    "Name" TEXT,
+    "Time" TEXT,
+    "Rarity" INTEGER,
+    "Pity" TEXT,
+    "Roll" INTEGER,
+    "Group" INTEGER,
+    "Title" TEXT,
+    "Part" TEXT,
+    PRIMARY KEY ("Banner", "Roll","Pity", "Time", "Name")
+  )
