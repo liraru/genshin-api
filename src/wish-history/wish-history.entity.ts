@@ -1,34 +1,35 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { ENTITIES } from '../config/entity-tagging.constant';
 
-@Entity()
+@Entity({ name: ENTITIES.WishHistory })
 export class WishHistory {
-  @PrimaryColumn('text')
+  @PrimaryColumn()
   Banner: string;
 
-  @Column('text')
+  @Column()
   Type: string;
 
-  @Column('text')
+  @Column()
   Name: string;
 
-  @Column('text')
+  @Column()
   Time: string;
 
-  @Column('integer')
+  @Column()
   Rarity: number;
 
-  @Column('text')
+  @Column()
   Pity: string;
 
-  @Column('integer')
+  @Column()
   Roll: string;
 
-  @Column('integer')
+  @Column()
   Group: string;
 
-  @Column('text')
+  @Column()
   Title: string;
 
-  @Column('text')
+  @Column()
   Part: string;
 }
