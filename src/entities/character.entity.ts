@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { ENTITIES } from '../config/entity-tagging.constant';
 
 @Entity({ name: ENTITIES.Characters })
-export class Characters {
+export class Character {
   @PrimaryColumn()
   name: string;
 

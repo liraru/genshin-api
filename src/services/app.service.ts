@@ -6,9 +6,9 @@ export class AppService implements OnModuleInit {
   constructor(private readonly _staticDataService: StaticDataService) {}
 
   onModuleInit() {
-    console.log('Initializing AppService...');
+    console.log('===================> Initializing AppService...');
 
-    console.log('Launch characters import...');
+    console.log('===================> Launch characters import...');
     this._staticDataService.importCharacters();
   }
 }
