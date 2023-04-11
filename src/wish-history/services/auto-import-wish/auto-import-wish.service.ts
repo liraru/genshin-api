@@ -83,7 +83,7 @@ export class AutoImportWishService {
       .getOne();
 
     const lastPullTime = lastPull.Time;
-    // console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
+    console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
 
     excelBannerData.forEach((row: IExcelRow) => {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
@@ -94,7 +94,7 @@ export class AutoImportWishService {
     });
   }
 
-  async readExcel() {
+  readExcel() {
     const excelData = ExcelToJson({
       source: fs.readFileSync('excel/paimonmoe_wish_history.xlsx'),
       header: { rows: 1 }
