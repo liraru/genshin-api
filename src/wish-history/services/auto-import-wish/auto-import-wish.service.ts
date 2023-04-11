@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as ExcelToJson from 'convert-excel-to-json';
 import * as fs from 'fs';
+import { DataSource, Repository } from 'typeorm';
+import { WishHistory } from 'src/entities/wish-history.entity';
 
 interface IExcelRow {
   A: string;
@@ -26,13 +29,20 @@ interface IExcelRowTitle {
   Part: string;
 }
 
+const BANNERS = {
+  CHARACTERS: 'Character Event',
+  WEAPONS: 'Weapon Event',
+  STANDARD: 'Standard'
+};
+
 @Injectable()
 export class AutoImportWishService {
-  constructor() {
-    console.log('AutoImport constructor');
-  }
+  constructor(
+    @InjectRepository(WishHistory) private _wishHistoryRepo: Repository<WishHistory>,
+    private readonly _dataSource: DataSource
+  ) {}
 
-  private excelColumnToExcelTitle(excelRow: IExcelRow): IExcelRowTitle {
+  private _excelColumnToExcelTitle(excelRow: IExcelRow): IExcelRowTitle {
     return {
       Type: excelRow.A,
       Name: excelRow.B,
@@ -46,23 +56,52 @@ export class AutoImportWishService {
     };
   }
 
-  readExcel() {
-    console.log('readExcel');
+  private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string): WishHistory {
+    return {
+      Banner: banner,
+      Group: row.Group,
+      Name: row.Name,
+      Part: row.Part,
+      Pity: row.Pity,
+      Rarity: row.Rarity,
+      Roll: row.Roll,
+      Time: row.Time,
+      Title: row.Title,
+      Type: row.Type
+    };
+  }
+
+  private async _importBanner(excelBannerData: IExcelRow[], banner: string) {
+    // SELECT Time FROM user_wish_history uwh WHERE Banner = 'Character Event' ORDER BY `Time` DESC LIMIT 1
+    const lastPull = await this._dataSource
+      .getRepository(WishHistory)
+      .createQueryBuilder('lastPull')
+      .select('lastPull.Time')
+      .where(`lastPull.banner = '${banner}'`)
+      .orderBy('lastPull.Time', 'DESC')
+      .limit(1)
+      .getOne();
+
+    const lastPullTime = lastPull.Time;
+    // console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
+
+    excelBannerData.forEach((row: IExcelRow) => {
+      const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
+      if (parsed.Time > lastPullTime) {
+        console.log(`> ADDING ${parsed.Name} FROM ${banner} BANNER`);
+        this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner));
+      }
+    });
+  }
+
+  async readExcel() {
     const excelData = ExcelToJson({
       source: fs.readFileSync('excel/paimonmoe_wish_history.xlsx'),
       header: { rows: 1 }
     });
 
-    const banners = {
-      character: excelData['Character Event'],
-      weapon: excelData['Weapon Event'],
-      standard: excelData['Standard']
-    };
-
-    
-    banners.character.forEach((row: IExcelRow) => {
-      const parsed: IExcelRowTitle = this.excelColumnToExcelTitle(row);
-
-    });
+    this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS);
+    this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS);
+    this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD);
   }
 }
