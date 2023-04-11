@@ -1,4 +1,4 @@
-import { WishHistory } from '../wish-history/wish-history.entity';
+import { WishHistory } from '../entities/wish-history.entity';
 
 export const databaseConfig = {
   mysql: {

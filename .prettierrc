@@ -1,5 +1,23 @@
 {
+  "bracketSpacing": true,
+  "printWidth": 135,
+  "semi": true,
   "singleQuote": true,
-  "trailingComma": "all",
-  "endOfLine":"auto"
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "useTabs": false,
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 80
+      }
+    },
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { CONSTANTS } from '../constants';
-import { WishHistory } from './wish-history.entity';
+import { WishHistory } from '../entities/wish-history.entity';
 
 export const wishHistoryProviders = [
   {

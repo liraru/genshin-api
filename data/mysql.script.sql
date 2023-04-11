@@ -40,12 +40,15 @@ CREATE TABLE
     `ratity` CHAR(1),
     `gender` VARCHAR(10),
     `region` VARCHAR(20),
-    `affiliation` VARCHAR(20),
+    `affiliation` VARCHAR(50),
     `constellation` VARCHAR(30),
     `weapontype` VARCHAR(20),
     `substat` VARCHAR(30),
     `icon` VARCHAR(512),
+    `icon_item` VARCHAR(512),
+    `icon_party` VARCHAR(512),
     `gacha_splash` VARCHAR(512),
+    `gacha_multi` VARCHAR(512),
     PRIMARY KEY (`name`)
   );
 
