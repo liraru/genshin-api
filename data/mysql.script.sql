@@ -40,7 +40,7 @@ CREATE TABLE
     `ratity` CHAR(1),
     `gender` VARCHAR(10),
     `region` VARCHAR(20),
-    `affiliation` VARCHAR(20),
+    `affiliation` VARCHAR(50),
     `constellation` VARCHAR(30),
     `weapontype` VARCHAR(20),
     `substat` VARCHAR(30),

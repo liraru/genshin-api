@@ -40,7 +40,7 @@ export class StaticDataService {
     console.log('>>> INSERT', this.parseBowjaToLocal(character));
     await this.charactersRepo.insert(this.parseBowjaToLocal(character));
   }
-
+  
   async importCharacters() {
     const charactersDB: Character[] = await this.charactersRepo.find();
     let notParsedCharacters: string[] = [];
