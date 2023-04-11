@@ -12,9 +12,9 @@ import { ImportStaticDataModule } from './import-static-data/import-static-data.
 @Module({
   imports: [
     UsersModule,
+    ImportStaticDataModule,
     WishHistoryModule,
     TypeOrmModule.forRoot(databaseConfig.mysql as TypeOrmModuleOptions),
-    ImportStaticDataModule,
   ],
   controllers: [],
   providers: [],

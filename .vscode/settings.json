@@ -18,5 +18,37 @@
     "titleBar.inactiveBackground": "#004d3d99",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#004D3D"
+  "peacock.color": "#004D3D",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.bracketPairColorization.enabled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.find.addExtraSpaceOnTop": false,
+  "editor.matchBrackets": "always",
+  "editor.guides.bracketPairs": "active",
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.quoteStyle": "single",
+  "prettier.configPath": ".prettierrc",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "files.exclude": {
+    "dist": true,
+    "**/*.spec.ts": true,
+    "e2e": true,
+    ".idea": true,
+    "lib": true,
+    "node_modules": true
+  }
 }
