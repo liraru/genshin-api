@@ -95,13 +95,15 @@ export class AutoImportWishService {
   }
 
   readExcel() {
-    const excelData = ExcelToJson({
-      source: fs.readFileSync('excel/paimonmoe_wish_history.xlsx'),
-      header: { rows: 1 }
-    });
+    if (fs.existsSync('excel/paimonmoe_wish_history.xlsx')) {
+      const excelData = ExcelToJson({
+        source: fs.readFileSync('excel/paimonmoe_wish_history.xlsx'),
+        header: { rows: 1 }
+      });
 
-    this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS);
-    this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS);
-    this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD);
+      this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS);
+      this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS);
+      this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD);
+    }
   }
 }
