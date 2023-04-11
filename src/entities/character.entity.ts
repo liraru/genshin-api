@@ -43,5 +43,14 @@ export class Character {
   icon: string;
 
   @Column()
+  icon_item: string;
+
+  @Column()
+  icon_party: string;
+
+  @Column()
   gacha_splash: string;
+
+  @Column()
+  gacha_multi: string;
 }
