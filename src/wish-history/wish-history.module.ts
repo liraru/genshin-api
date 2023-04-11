@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WishHistoryController } from './wish-history.controller';
 import { WishHistory } from '../entities/wish-history.entity';
-import { WishHistoryService } from './wish-history.service';
+import { WishHistoryService } from './services/wish-history.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WishHistory])],

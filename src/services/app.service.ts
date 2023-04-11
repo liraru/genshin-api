@@ -8,7 +8,7 @@ export class AppService implements OnModuleInit {
   onModuleInit() {
     console.log('===================> Initializing AppService...');
 
-    console.log('===================> Launch characters import...');
-    this._staticDataService.importCharacters();
+    // console.log('===================> Launch characters import...');
+    // this._staticDataService.importCharacters();
   }
 }
