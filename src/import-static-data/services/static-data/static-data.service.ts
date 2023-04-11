@@ -37,15 +37,13 @@ export class StaticDataService {
   }
 
   private async saveOnDB(character: IBowjaCharacter) {
-    console.log('>>> INSERT', this.parseBowjaToLocal(character));
+    console.log(`>>> INSERT ${character.name} ON DATABASE`);
     await this.charactersRepo.insert(this.parseBowjaToLocal(character));
   }
-  
+
   async importCharacters() {
     const charactersDB: Character[] = await this.charactersRepo.find();
     let notParsedCharacters: string[] = [];
-    console.log('Characters in DB');
-    console.log(charactersDB);
 
     this.bowjaDataService
       .getAllCharacterNames()
