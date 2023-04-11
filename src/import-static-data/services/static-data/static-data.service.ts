@@ -11,7 +11,7 @@ import { STATIC_DATA_CONSTANTS } from '../../constants';
 export class StaticDataService {
   constructor(
     @InjectRepository(Character) private charactersRepo: Repository<Character>,
-    private readonly bowjaDataService: BowjaDataService
+    private readonly _bowjaDataService: BowjaDataService
   ) {}
 
   private parseBowjaToLocal(bowja: IBowjaCharacter): Character {
@@ -45,7 +45,7 @@ export class StaticDataService {
     const charactersDB: Character[] = await this.charactersRepo.find();
     let notParsedCharacters: string[] = [];
 
-    this.bowjaDataService
+    this._bowjaDataService
       .getAllCharacterNames()
       .pipe(
         map((results: string[]) => {
@@ -59,7 +59,7 @@ export class StaticDataService {
         }),
         mergeMap((chars: string[]) => {
           const allRequest: Observable<IBowjaCharacter>[] = [];
-          chars.forEach((char: string) => allRequest.push(this.bowjaDataService.getCharacterDetail(char)));
+          chars.forEach((char: string) => allRequest.push(this._bowjaDataService.getCharacterDetail(char)));
           return forkJoin(allRequest);
         })
       )

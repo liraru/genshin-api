@@ -19,13 +19,13 @@ export class WishHistory {
   Rarity: number;
 
   @Column()
-  Pity: string;
+  Pity: number;
 
   @Column()
-  Roll: string;
+  Roll: number;
 
   @Column()
-  Group: string;
+  Group: number;
 
   @Column()
   Title: string;

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { WishHistoryService } from './wish-history.service';
+import { WishHistoryService } from './services/wish-history/wish-history.service';
 
 @Controller('/wish-history')
 export class WishHistoryController {

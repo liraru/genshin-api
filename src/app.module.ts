@@ -10,8 +10,8 @@ import { WishHistoryModule } from './wish-history/wish-history.module';
 @Module({
   imports: [
     UsersModule,
-    ImportStaticDataModule,
     WishHistoryModule,
+    ImportStaticDataModule,
     TypeOrmModule.forRoot(databaseConfig.mysql as TypeOrmModuleOptions)
   ],
   controllers: [],
@@ -20,6 +20,6 @@ import { WishHistoryModule } from './wish-history/wish-history.module';
 export class AppModule implements OnModuleInit {
   constructor(private readonly appService: AppService, private dataSource: DataSource) {}
   onModuleInit() {
-    console.log('Initializing API');
+    // console.log('Initializing API');
   }
 }
