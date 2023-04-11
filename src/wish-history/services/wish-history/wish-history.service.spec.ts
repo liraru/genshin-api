@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WishHistoryService } from './wish-history.service';
+import { WishHistoryService } from './wish-history/wish-history.service';
 
 describe('WishHistoryService', () => {
   let service: WishHistoryService;
