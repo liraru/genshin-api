@@ -1,24 +1,25 @@
-import { Module } from '@nestjs/common';
-import {
-  TypeOrmModule,
-  TypeOrmModuleOptions
-} from '@nestjs/typeorm';
+import { Module, OnModuleInit } from '@nestjs/common';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { databaseConfig } from './config/database.config';
 import { UsersModule } from './users/users.module';
 import { WishHistoryModule } from './wish-history/wish-history.module';
 import { ImportStaticDataModule } from './import-static-data/import-static-data.module';
+import { AppService } from './services/app.service';
 
 @Module({
   imports: [
     UsersModule,
     ImportStaticDataModule,
     WishHistoryModule,
-    TypeOrmModule.forRoot(databaseConfig.mysql as TypeOrmModuleOptions),
+    TypeOrmModule.forRoot(databaseConfig.mysql as TypeOrmModuleOptions)
   ],
   controllers: [],
-  providers: [],
+  providers: [AppService]
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly appService: AppService, private dataSource: DataSource) {}
+  onModuleInit() {
+    console.log('Initializing...');
+  }
 }
