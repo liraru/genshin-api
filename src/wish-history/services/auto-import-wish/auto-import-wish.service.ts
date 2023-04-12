@@ -59,6 +59,7 @@ export class AutoImportWishService {
   private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string): WishHistory {
     return {
       Banner: banner,
+      user_id: 1,
       Group: row.Group,
       Name: row.Name,
       Part: row.Part,

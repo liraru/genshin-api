@@ -7,6 +7,9 @@ export class WishHistory {
   Banner: string;
 
   @Column()
+  user_id: number;
+
+  @Column()
   Type: string;
 
   @Column()
