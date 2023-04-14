@@ -90,6 +90,7 @@ CREATE TABLE
 
 CREATE TABLE
   `user_wish_history` (
+    `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT,
     `Banner` VARCHAR(100),
     `Type` VARCHAR(50),
@@ -101,6 +102,6 @@ CREATE TABLE
     `Group` MEDIUMINT,
     `Title` VARCHAR(100),
     `Part` VARCHAR(20),
-    PRIMARY KEY (`Banner`, `Roll`, `Pity`, `Time`, `Name`),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
   );
