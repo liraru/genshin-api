@@ -82,13 +82,13 @@ export class AutoImportWishService {
       .orderBy('lastPull.Time', 'DESC')
       .limit(1)
       .getOne();
-
-    const lastPullTime = lastPull.Time;
+    
+    const lastPullTime = lastPull?.Time;
     console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
 
     excelBannerData.forEach((row: IExcelRow) => {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
-      if (parsed.Time > lastPullTime) {
+      if (!lastPullTime || parsed.Time > lastPullTime) {
         console.log(`> ADDING ${parsed.Name} FROM ${banner} BANNER`);
         this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner));
       }

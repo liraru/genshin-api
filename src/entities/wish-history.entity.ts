@@ -4,10 +4,13 @@ import { ENTITIES } from '../config/entity-tagging.constant';
 @Entity({ name: ENTITIES.WishHistory })
 export class WishHistory {
   @PrimaryColumn()
-  Banner: string;
-
+  id?: number;
+  
   @Column()
   user_id: number;
+
+  @Column()
+  Banner: string;
 
   @Column()
   Type: string;
