@@ -2,21 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
-import { BANNERS } from 'src/wish-history/constants';
-import { IPity } from 'src/wish-history/interfaces/pity.interface';
+import { BANNERS, STANDARD_CHARACTERS } from 'src/wish-history/constants';
+import { IFiveStarHistory, IFiveStarPity, IPity } from 'src/wish-history/interfaces/pity.interface';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class WishHistoryService {
   constructor(
     @InjectRepository(WishHistory)
-    private wishHistoryRepo: Repository<WishHistory>,
+    private _wishHistoryRepo: Repository<WishHistory>,
     private readonly _dataSource: DataSource
   ) {}
-
-  async findAll(): Promise<WishHistory[]> {
-    return await this.wishHistoryRepo.find();
-  }
 
   private async _retrievePityFromDB(banner: string, rarity: number): Promise<number> {
     /*
@@ -49,6 +45,39 @@ export class WishHistoryService {
     return pityQB?.count ?? 0;
   }
 
+  private _checkFiftyWon(character: string, date: string): boolean {
+    return (
+      STANDARD_CHARACTERS.find((f) => f.character !== character || (f.promoReleaseEnd && f.promoReleaseEnd > date)) !==
+      undefined
+    );
+  }
+
+  private async _retrieveFiveStarsHistory(banner: string) {
+    /*
+        SELECT Name, Pity, Time FROM user_wish_history uwh 
+        WHERE Rarity = 5 AND Banner = 'Character Event' 
+        ORDER BY `Time` DESC
+    */
+
+    const fiveStarPullQB = await this._dataSource
+      .getRepository(WishHistory)
+      .createQueryBuilder('fiveStarPullQB')
+      .where(`fiveStarPullQB.Rarity = 5 AND fiveStarPullQB.Banner = '${banner}'`)
+      .orderBy(`fiveStarPullQB.Time`, `DESC`)
+      .getMany();
+
+    const fiveStarPulls: IFiveStarPity[] = [];
+    fiveStarPullQB?.forEach((el: WishHistory) => {
+      fiveStarPulls.push({ name: el.Name, pity: el.Pity, fiftyWon: this._checkFiftyWon(el.Name, el.Time) });
+    });
+
+    return fiveStarPulls;
+  }
+
+  async findAll(): Promise<WishHistory[]> {
+    return await this._wishHistoryRepo.find();
+  }
+
   getPity(): Observable<IPity> {
     return forkJoin({
       char5: from(this._retrievePityFromDB(BANNERS.CHARACTERS, 5)),
@@ -62,6 +91,22 @@ export class WishHistoryService {
           character: { five: res.char5, four: res.char4 },
           weapon: { five: res.weapon },
           standard: { five: res.standard5, four: res.standard4 }
+        };
+      })
+    );
+  }
+
+  getFiveStarHistory(): Observable<IFiveStarHistory> {
+    return forkJoin({
+      c: from(this._retrieveFiveStarsHistory(BANNERS.CHARACTERS)),
+      w: from(this._retrieveFiveStarsHistory(BANNERS.WEAPONS)),
+      s: from(this._retrieveFiveStarsHistory(BANNERS.STANDARD))
+    }).pipe(
+      map((res) => {
+        return {
+          characters: res.c,
+          weapons: res.w,
+          standard: res.s
         };
       })
     );
