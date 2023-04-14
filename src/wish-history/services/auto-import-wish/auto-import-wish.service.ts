@@ -4,6 +4,7 @@ import * as ExcelToJson from 'convert-excel-to-json';
 import * as fs from 'fs';
 import { DataSource, Repository } from 'typeorm';
 import { WishHistory } from 'src/entities/wish-history.entity';
+import { BANNERS } from 'src/wish-history/constants';
 
 interface IExcelRow {
   A: string;
@@ -28,12 +29,6 @@ interface IExcelRowTitle {
   Title: string;
   Part: string;
 }
-
-const BANNERS = {
-  CHARACTERS: 'Character Event',
-  WEAPONS: 'Weapon Event',
-  STANDARD: 'Standard'
-};
 
 @Injectable()
 export class AutoImportWishService {
