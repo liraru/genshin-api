@@ -43,7 +43,6 @@ export class WishHistoryService {
       .createQueryBuilder('pityQB')
       .select('COUNT(pityQB.Name)', 'count')
       .where(`pityQB.banner = '${banner}'`)
-      .andWhere(`pityQB.rarity = ${rarity}`)
       .andWhere(`pityQB.Time > '${lastFiveStarQB?.Time ?? '2020'}'`)
       .getRawOne();
 
