@@ -9,4 +9,9 @@ export class WishHistoryController {
   public async findAll() {
     return this.wishHistoryService.findAll();
   }
+
+  @Get('pity')
+  public getPity() {
+    return this.wishHistoryService.getPity();
+  }
 }
