@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Character } from 'src/entities/character.entity';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Character } from '../../../../entities/character.entity';
 
 @Injectable()
 export class WishHistoryQueryBuildersService {
