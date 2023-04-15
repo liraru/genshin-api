@@ -19,10 +19,7 @@ export class WishHistoryService {
     switch (banner) {
       case BANNERS.CHARACTERS:
         const standard = STANDARD_CHARACTERS.find((f) => f.character === character);
-        console.log(`CHARACTER ${character} | ${date} ### STANDARD => ${ standard?.character } | ${standard?.promoReleaseEnd}`);
-        return !wonLast
-          ? false
-          : !(standard?.character === character && (standard?.promoReleaseEnd ?? '2020' < date));
+        return !wonLast ? false : !(standard && (standard?.promoReleaseEnd ?? '2020') < date);
 
       // TODO Weapons cases
       case BANNERS.WEAPONS:
