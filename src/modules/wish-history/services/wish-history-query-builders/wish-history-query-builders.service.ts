@@ -51,15 +51,17 @@ export class WishHistoryQueryBuildersService {
           WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' 
         ORDER BY `Time` DESC
     */
-    return (
-      this._dataSource
-        .getRepository(WishHistory)
-        .createQueryBuilder('uwh')
-        .leftJoinAndSelect(Character, `char`, `char.name = uwh.Name`)
-        .select(`uwh.Name, uwh.Pity, uwh.Time, uwh.Type, char.icon`)
-        .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
-        .orderBy(`uwh.Time`, `ASC`)
-        .getRawMany()
-    );
+    return this._dataSource
+      .getRepository(WishHistory)
+      .createQueryBuilder('uwh')
+      .leftJoinAndSelect(Character, `char`, `char.name = uwh.Name`)
+      .select(`uwh.Name, uwh.Pity, uwh.Time, uwh.Type, char.icon`)
+      .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
+      .orderBy(`uwh.Time`, `ASC`)
+      .getRawMany();
+  }
+
+  getChartValues() {
+    // TODO
   }
 }
