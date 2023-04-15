@@ -1,6 +1,6 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { databaseConfig } from 'src/config/database.config';
+import { databaseConfig } from 'private/database.config';
 import { ImportStaticDataModule } from 'src/modules/import-static-data/import-static-data.module';
 import { UsersModule } from 'src/modules/users/users.module';
 import { WishHistoryModule } from 'src/modules/wish-history/wish-history.module';
