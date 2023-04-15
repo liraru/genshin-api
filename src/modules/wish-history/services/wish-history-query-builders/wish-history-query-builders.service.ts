@@ -56,7 +56,7 @@ export class WishHistoryQueryBuildersService {
         .getRepository(WishHistory)
         .createQueryBuilder('uwh')
         .leftJoinAndSelect(Character, `char`, `char.name = uwh.Name`)
-        .select(`uwh.Name, uwh.Pity, uwh.Time, char.icon`)
+        .select(`uwh.Name, uwh.Pity, uwh.Time, uwh.Type, char.icon`)
         .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
         .orderBy(`uwh.Time`, `ASC`)
         .getRawMany()

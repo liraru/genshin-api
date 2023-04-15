@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
-import { BANNERS, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
+import { BANNERS, ROLL_TYPE, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
 import { Repository } from 'typeorm';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
 import { IFiveStarHistory, IFiveStarRoll } from '../../interfaces/five-star-history.interface';
@@ -43,7 +43,7 @@ export class WishHistoryService {
         pity: el.Pity,
         fiftyWon: this._checkFiftyWon(el.Name, el.Time, lossCount !== 1, banner),
         date: el.Time,
-        image: banner === BANNERS.CHARACTERS ? el.icon : undefined
+        image: el.Type !== ROLL_TYPE.WEAPON ? el.icon : undefined
       };
       fiveStarPulls.push(roll);
       lossCount = roll.fiftyWon ? 0 : lossCount + 1;

@@ -4,6 +4,11 @@ export const BANNERS = {
   STANDARD: 'Standard'
 };
 
+export const ROLL_TYPE = {
+  CHARACTER: 'Character',
+  WEAPON: 'Weapon'
+}
+
 export const STANDARD_CHARACTERS = [
   { character: 'Dehya', promoReleaseEnd: '2023-03-21' },
   { character: 'Diluc' },
