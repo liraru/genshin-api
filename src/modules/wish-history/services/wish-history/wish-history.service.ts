@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
-import { BANNERS, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
-import { IFiveStarHistory, IFiveStarPity, IPity } from 'src/modules/wish-history/interfaces/pity.interface';
+import { BANNERS, ROLL_TYPE, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
 import { Repository } from 'typeorm';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
+import { IFiveStarHistory, IFiveStarRoll } from '../../interfaces/five-star-history.interface';
+import { IPity } from '../../interfaces/pity.interface';
 
 @Injectable()
 export class WishHistoryService {
@@ -32,21 +33,23 @@ export class WishHistoryService {
 
   private async _retrieveFiveStarsHistory(banner: string) {
     const fiveStarPullQB = await this._qbService.getFiveStarsHistory(banner);
-    const fiveStarPulls: IFiveStarPity[] = [];
+    const fiveStarPulls: IFiveStarRoll[] = [];
     let lossCount = 0;
 
     fiveStarPullQB?.forEach((el: WishHistory) => {
       lossCount = lossCount === 2 ? 0 : lossCount;
-      const roll = {
+      const roll: IFiveStarRoll = {
         name: el.Name,
         pity: el.Pity,
-        fiftyWon: this._checkFiftyWon(el.Name, el.Time, lossCount !== 1, banner)
+        fiftyWon: this._checkFiftyWon(el.Name, el.Time, lossCount !== 1, banner),
+        date: el.Time,
+        image: el.Type !== ROLL_TYPE.WEAPON ? el.icon : undefined
       };
       fiveStarPulls.push(roll);
       lossCount = roll.fiftyWon ? 0 : lossCount + 1;
     });
 
-    return fiveStarPulls;
+    return fiveStarPulls.sort((a, b) => a.date > b.date ? -1 : 1);
   }
 
   async findAll(): Promise<WishHistory[]> {

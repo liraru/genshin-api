@@ -1,11 +1,11 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ENTITIES } from '../config/entity-tagging.constant';
 
 @Entity({ name: ENTITIES.WishHistory })
 export class WishHistory {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id?: number;
-  
+
   @Column()
   user_id: number;
 
@@ -38,4 +38,6 @@ export class WishHistory {
 
   @Column()
   Part: string;
+
+  icon?: string;
 }
