@@ -45,11 +45,13 @@ export class WishHistoryService {
     return pityQB?.count ?? 0;
   }
 
-  private _checkFiftyWon(character: string, date: string): boolean {
-    return (
-      STANDARD_CHARACTERS.find((f) => f.character !== character || (f.promoReleaseEnd && f.promoReleaseEnd > date)) !==
-      undefined
-    );
+  private _checkFiftyWon(character: string, date: string, previousWon: boolean): boolean {
+    const standard = STANDARD_CHARACTERS.find((f) => f.character === character);
+    
+    if ((!previousWon && standard) || (standard?.character === character && (standard?.promoReleaseEnd ?? '2020' > date))) {
+      return false;
+    }
+    return true;
   }
 
   private async _retrieveFiveStarsHistory(banner: string) {
@@ -63,12 +65,20 @@ export class WishHistoryService {
       .getRepository(WishHistory)
       .createQueryBuilder('fiveStarPullQB')
       .where(`fiveStarPullQB.Rarity = 5 AND fiveStarPullQB.Banner = '${banner}'`)
-      .orderBy(`fiveStarPullQB.Time`, `DESC`)
+      .orderBy(`fiveStarPullQB.Time`, `ASC`)
       .getMany();
 
     const fiveStarPulls: IFiveStarPity[] = [];
+    let previousRollWon: boolean;
+
     fiveStarPullQB?.forEach((el: WishHistory) => {
-      fiveStarPulls.push({ name: el.Name, pity: el.Pity, fiftyWon: this._checkFiftyWon(el.Name, el.Time) });
+      const roll = {
+        name: el.Name,
+        pity: el.Pity,
+        fiftyWon: this._checkFiftyWon(el.Name, el.Time, previousRollWon)
+      };
+      fiveStarPulls.push(roll);
+      previousRollWon = roll.fiftyWon;
     });
 
     return fiveStarPulls;
