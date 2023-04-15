@@ -62,6 +62,11 @@ export class WishHistoryQueryBuildersService {
   }
 
   getChartValues() {
-    // TODO
+    /*
+        SELECT SUBSTRING(Time, 1, 7) `Month`, Rarity, COUNT(*) `Total`
+        FROM user_wish_history uwh 
+        GROUP BY Month, Rarity 
+        ORDER BY Month, Rarity    
+    */
   }
 }
