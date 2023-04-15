@@ -15,31 +15,38 @@ export class WishHistoryService {
     private readonly _qbService: WishHistoryQueryBuildersService
   ) {}
 
-  private _checkFiftyWon(character: string, date: string, previousWon: boolean): boolean {
+  private _checkFiftyWon(character: string, date: string, wonLast: boolean, banner: string): boolean {
     const standard = STANDARD_CHARACTERS.find((f) => f.character === character);
 
-    if (
-      (!previousWon && standard) ||
-      (standard?.character === character && (standard?.promoReleaseEnd ?? '2020' > date))
-    ) {
-      return false;
+    switch (banner) {
+      case BANNERS.CHARACTERS:
+        return !wonLast
+          ? false
+          : !(standard?.character === character && (standard?.promoReleaseEnd ?? '2020' > date) !== undefined);
+
+      // TODO Weapons cases
+      case BANNERS.WEAPONS:
+        return true;
+
+      case BANNERS.STANDARD:
+        return true;
     }
-    return true;
   }
 
   private async _retrieveFiveStarsHistory(banner: string) {
     const fiveStarPullQB = await this._qbService.getFiveStarsHistory(banner);
     const fiveStarPulls: IFiveStarPity[] = [];
-    let previousRollWon: boolean;
+    let lossCount = 0;
 
     fiveStarPullQB?.forEach((el: WishHistory) => {
+      lossCount = lossCount === 2 ? 0 : lossCount;
       const roll = {
         name: el.Name,
         pity: el.Pity,
-        fiftyWon: this._checkFiftyWon(el.Name, el.Time, previousRollWon)
+        fiftyWon: this._checkFiftyWon(el.Name, el.Time, lossCount !== 1, banner)
       };
       fiveStarPulls.push(roll);
-      previousRollWon = roll.fiftyWon;
+      lossCount = roll.fiftyWon ? 0 : lossCount + 1;
     });
 
     return fiveStarPulls;
