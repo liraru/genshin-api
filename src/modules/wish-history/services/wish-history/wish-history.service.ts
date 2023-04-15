@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { BANNERS, ROLL_TYPE, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
+import { IFiveStarHistory, IFiveStarRoll } from 'src/modules/wish-history/interfaces/five-star-history.interface';
+import { IMonthBarDB, IMonthlyBarChart } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
+import { IPity } from 'src/modules/wish-history/interfaces/pity.interface';
 import { Repository } from 'typeorm';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
-import { IFiveStarHistory, IFiveStarRoll } from '../../interfaces/five-star-history.interface';
-import { IPity } from '../../interfaces/pity.interface';
 
 @Injectable()
 export class WishHistoryService {
@@ -49,7 +50,7 @@ export class WishHistoryService {
       lossCount = roll.fiftyWon ? 0 : lossCount + 1;
     });
 
-    return fiveStarPulls.sort((a, b) => a.date > b.date ? -1 : 1);
+    return fiveStarPulls.sort((a, b) => (a.date > b.date ? -1 : 1));
   }
 
   async findAll(): Promise<WishHistory[]> {
@@ -88,5 +89,30 @@ export class WishHistoryService {
         };
       })
     );
+  }
+
+  async getBarChartData(): Promise<IMonthlyBarChart[]> {
+    const dbData: IMonthBarDB[] = await this._qbService.getChartValues();
+    const parsed: IMonthlyBarChart[] = [];
+    const months: string[] = [];
+
+    dbData.forEach((el) => {
+      if (!months.find((f) => f === el.Month)) {
+        months.push(el.Month);
+      }
+    });
+
+    months.forEach((el: string) => {
+      parsed.push({
+        date: el,
+        wishes: {
+          r3: Number(dbData.find((f: IMonthBarDB) => f.Month === el && f.Rarity === 3)?.Total),
+          r4: Number(dbData.find((f: IMonthBarDB) => f.Month === el && f.Rarity === 4)?.Total),
+          r5: Number(dbData.find((f: IMonthBarDB) => f.Month === el && f.Rarity === 5)?.Total)
+        }
+      });
+    });
+
+    return parsed;
   }
 }

@@ -22,6 +22,6 @@ export class WishHistoryController {
 
   @Get('chart')
   public getChartValues() {
-    // TODO
+    return this._wishHistoryService.getBarChartData();
   }
 }

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Character } from 'src/entities/character.entity';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { DataSource, Repository } from 'typeorm';
+import { IMonthBarDB } from '../../interfaces/monthly-bar-chart.interface';
 
 @Injectable()
 export class WishHistoryQueryBuildersService {
@@ -45,11 +46,11 @@ export class WishHistoryQueryBuildersService {
 
   getFiveStarsHistory(banner: string): Promise<WishHistory[]> {
     /*
-        SELECT uwh.Name, uwh.Pity, uwh.Time, c.icon
+        SELECT uwh.Name, uwh.Pity, uwh.Time, uwh.Type, c.icon
         FROM user_wish_history uwh
         INNER JOIN `characters` c ON C.name = uwh.Name
           WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' 
-        ORDER BY `Time` DESC
+        ORDER BY `Time` ASC
     */
     return this._dataSource
       .getRepository(WishHistory)
@@ -61,12 +62,21 @@ export class WishHistoryQueryBuildersService {
       .getRawMany();
   }
 
-  getChartValues() {
+  getChartValues(): Promise<IMonthBarDB[]> {
     /*
         SELECT SUBSTRING(Time, 1, 7) `Month`, Rarity, COUNT(*) `Total`
         FROM user_wish_history uwh 
         GROUP BY Month, Rarity 
         ORDER BY Month, Rarity    
     */
+    return this._dataSource
+      .getRepository(WishHistory)
+      .createQueryBuilder('uwh')
+      .select(`SUBSTRING(Time, 1, 7) 'Month', Rarity, COUNT(*) 'Total'`)
+      .groupBy(`Month`)
+      .addGroupBy(`Rarity`)
+      .orderBy(`Month`, `ASC`)
+      .addOrderBy(`Rarity`, `ASC`)
+      .getRawMany();
   }
 }
