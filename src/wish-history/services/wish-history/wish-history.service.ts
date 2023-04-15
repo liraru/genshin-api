@@ -16,13 +16,13 @@ export class WishHistoryService {
   ) {}
 
   private _checkFiftyWon(character: string, date: string, wonLast: boolean, banner: string): boolean {
-    const standard = STANDARD_CHARACTERS.find((f) => f.character === character);
-
     switch (banner) {
       case BANNERS.CHARACTERS:
+        const standard = STANDARD_CHARACTERS.find((f) => f.character === character);
+        console.log(`CHARACTER ${character} | ${date} ### STANDARD => ${ standard?.character } | ${standard?.promoReleaseEnd}`);
         return !wonLast
           ? false
-          : !(standard?.character === character && (standard?.promoReleaseEnd ?? '2020' > date) !== undefined);
+          : !(standard?.character === character && (standard?.promoReleaseEnd ?? '2020' < date));
 
       // TODO Weapons cases
       case BANNERS.WEAPONS:
@@ -34,6 +34,7 @@ export class WishHistoryService {
   }
 
   private async _retrieveFiveStarsHistory(banner: string) {
+    console.clear();
     const fiveStarPullQB = await this._qbService.getFiveStarsHistory(banner);
     const fiveStarPulls: IFiveStarPity[] = [];
     let lossCount = 0;
