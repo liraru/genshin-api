@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { StaticDataService } from 'src/import-static-data/services/static-data/static-data.service';
-import { AutoImportWishService } from 'src/wish-history/services/auto-import-wish/auto-import-wish.service';
+import { StaticDataService } from 'src/modules/import-static-data/services/static-data/static-data.service';
+import { AutoImportWishService } from 'src/modules/wish-history/services/auto-import-wish/auto-import-wish.service';
 
 @Injectable()
 export class AppService implements OnModuleInit {

@@ -1,11 +1,11 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { databaseConfig } from 'src/config/database.config';
+import { ImportStaticDataModule } from 'src/modules/import-static-data/import-static-data.module';
+import { UsersModule } from 'src/modules/users/users.module';
+import { WishHistoryModule } from 'src/modules/wish-history/wish-history.module';
+import { AppService } from 'src/services/app.service';
 import { DataSource } from 'typeorm';
-import { databaseConfig } from './config/database.config';
-import { ImportStaticDataModule } from './import-static-data/import-static-data.module';
-import { AppService } from './services/app.service';
-import { UsersModule } from './users/users.module';
-import { WishHistoryModule } from './wish-history/wish-history.module';
 
 @Module({
   imports: [
