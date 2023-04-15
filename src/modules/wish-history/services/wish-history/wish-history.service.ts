@@ -43,13 +43,13 @@ export class WishHistoryService {
         pity: el.Pity,
         fiftyWon: this._checkFiftyWon(el.Name, el.Time, lossCount !== 1, banner),
         date: el.Time,
-        image: banner === BANNERS.CHARACTERS ? '' : undefined
+        image: banner === BANNERS.CHARACTERS ? el.icon : undefined
       };
       fiveStarPulls.push(roll);
       lossCount = roll.fiftyWon ? 0 : lossCount + 1;
     });
 
-    return fiveStarPulls;
+    return fiveStarPulls.sort((a, b) => a.date > b.date ? -1 : 1);
   }
 
   async findAll(): Promise<WishHistory[]> {

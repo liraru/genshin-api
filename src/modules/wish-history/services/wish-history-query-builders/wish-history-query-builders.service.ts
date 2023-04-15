@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { DataSource, Repository } from 'typeorm';
+import { Character } from '../../../../entities/character.entity';
 
 @Injectable()
 export class WishHistoryQueryBuildersService {
@@ -50,13 +51,15 @@ export class WishHistoryQueryBuildersService {
           WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' 
         ORDER BY `Time` DESC
     */
-
-    return this._dataSource
-      .getRepository(WishHistory)
-      .createQueryBuilder('uwh')
-      .leftJoinAndSelect(`uwh.Name`, `name`)
-      // .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
-      // .orderBy(`uwh.Time`, `ASC`)
-      .getMany();
+    return (
+      this._dataSource
+        .getRepository(WishHistory)
+        .createQueryBuilder('uwh')
+        .leftJoinAndSelect(Character, `char`, `char.name = uwh.Name`)
+        .select(`uwh.Name, uwh.Pity, uwh.Time, char.icon`)
+        .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
+        .orderBy(`uwh.Time`, `ASC`)
+        .getRawMany()
+    );
   }
 }
