@@ -19,4 +19,9 @@ export class WishHistoryController {
   public getFiveStarsHistory() {
     return this._wishHistoryService.getFiveStarHistory();
   }
+
+  @Get('chart')
+  public getChartValues() {
+    return this._wishHistoryService.getBarChartData();
+  }
 }
