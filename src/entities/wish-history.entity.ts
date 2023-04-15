@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ENTITIES } from '../config/entity-tagging.constant';
+import { Character } from './character.entity';
 
 @Entity({ name: ENTITIES.WishHistory })
 export class WishHistory {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id?: number;
   
   @Column()
@@ -38,4 +39,8 @@ export class WishHistory {
 
   @Column()
   Part: string;
+
+  @OneToOne(() => Character, (char) => char.name)
+  @JoinColumn({name: `Name`, referencedColumnName: `name`})
+  Image?: Character;
 }

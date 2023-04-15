@@ -44,16 +44,19 @@ export class WishHistoryQueryBuildersService {
 
   getFiveStarsHistory(banner: string): Promise<WishHistory[]> {
     /*
-        SELECT Name, Pity, Time FROM user_wish_history uwh 
-        WHERE Rarity = 5 AND Banner = 'Character Event' 
+        SELECT uwh.Name, uwh.Pity, uwh.Time, c.icon
+        FROM user_wish_history uwh
+        INNER JOIN `characters` c ON C.name = uwh.Name
+          WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' 
         ORDER BY `Time` DESC
     */
 
     return this._dataSource
       .getRepository(WishHistory)
-      .createQueryBuilder('fiveStarPullQB')
-      .where(`fiveStarPullQB.Rarity = 5 AND fiveStarPullQB.Banner = '${banner}'`)
-      .orderBy(`fiveStarPullQB.Time`, `ASC`)
+      .createQueryBuilder('uwh')
+      .leftJoinAndSelect(`uwh.Name`, `name`)
+      // .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
+      // .orderBy(`uwh.Time`, `ASC`)
       .getMany();
   }
 }
