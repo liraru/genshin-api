@@ -75,6 +75,7 @@ CREATE TABLE
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT,
     `character_user` INT,
+    `order` INT,
     `set_status` TINYINT,
     `sands_stat` VARCHAR(512),
     `sands_status` TINYINT,
