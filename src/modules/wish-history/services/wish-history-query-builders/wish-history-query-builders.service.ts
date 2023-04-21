@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Character } from 'src/entities/character.entity';
 import { WishHistory } from 'src/entities/wish-history.entity';
+import { IMonthBarDB } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
 import { DataSource } from 'typeorm';
-import { IMonthBarDB } from '../../interfaces/monthly-bar-chart.interface';
 
 @Injectable()
 export class WishHistoryQueryBuildersService {

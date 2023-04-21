@@ -1,21 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { BANNERS, ROLL_TYPE, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
 import { IFiveStarHistory, IFiveStarRoll } from 'src/modules/wish-history/interfaces/five-star-history.interface';
 import { IMonthBarDB, IMonthlyBarChart } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
 import { IPity } from 'src/modules/wish-history/interfaces/pity.interface';
-import { Repository } from 'typeorm';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
 
 @Injectable()
 export class WishHistoryService {
-  constructor(
-    @InjectRepository(WishHistory)
-    private _wishHistoryRepo: Repository<WishHistory>,
-    private readonly _qbService: WishHistoryQueryBuildersService
-  ) {}
+  constructor(private readonly _qbService: WishHistoryQueryBuildersService) {}
 
   private _checkFiftyWon(character: string, date: string, wonLast: boolean, banner: string): boolean {
     switch (banner) {
