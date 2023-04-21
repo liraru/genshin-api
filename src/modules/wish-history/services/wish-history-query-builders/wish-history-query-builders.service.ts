@@ -1,35 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Character } from 'src/entities/character.entity';
 import { WishHistory } from 'src/entities/wish-history.entity';
-import { DataSource, Repository } from 'typeorm';
-import { IMonthBarDB } from '../../interfaces/monthly-bar-chart.interface';
+import { IMonthBarDB } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class WishHistoryQueryBuildersService {
-  constructor(
-    @InjectRepository(WishHistory)
-    private _wishHistoryRepo: Repository<WishHistory>,
-    private readonly _dataSource: DataSource
-  ) {}
+  constructor(private readonly _dataSource: DataSource) {}
 
-  async getCurrentPity(banner: string, rarity: number): Promise<number> {
+  async getCurrentPity(userId: number, banner: string, rarity: number): Promise<number> {
     /*
         SELECT COUNT(Name) AS Pity FROM user_wish_history uwh 
         WHERE Banner = 'Character Event'
           AND Time > (
             SELECT Time 
             FROM user_wish_history uwh 
-            WHERE banner = 'Character Event' AND Rarity = 5 
+            WHERE banner = 'Character Event' AND Rarity = 5 AND user_id = 1
             ORDER BY Time DESC, id DESC LIMIT 1)
       */
     const lastFiveStarQB = await this._dataSource
       .getRepository(WishHistory)
-      .createQueryBuilder('pityQBSubquery')
-      .select('pityQBSubquery.Time')
-      .where(`pityQBSubquery.banner = '${banner}'`)
-      .andWhere(`pityQBSubquery.rarity = ${rarity}`)
-      .orderBy('pityQBSubquery.Time', 'DESC')
+      .createQueryBuilder('uwh')
+      .select('uwh.Time')
+      .where(`uwh.banner = '${banner}'`)
+      .andWhere(`uwh.rarity = ${rarity}`)
+      .andWhere(`uwh.user_id = ${userId}`)
+      .orderBy('uwh.Time', 'DESC')
       .limit(1)
       .getOne();
 
@@ -44,12 +40,12 @@ export class WishHistoryQueryBuildersService {
     return pityQB?.count ?? 0;
   }
 
-  getFiveStarsHistory(banner: string): Promise<WishHistory[]> {
+  getFiveStarsHistory(userId: number, banner: string): Promise<WishHistory[]> {
     /*
         SELECT uwh.Name, uwh.Pity, uwh.Time, uwh.Type, c.icon
         FROM user_wish_history uwh
         INNER JOIN `characters` c ON C.name = uwh.Name
-          WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' 
+          WHERE uwh.Rarity = 5 AND uwh.Banner = 'Character Event' AND uwh.user_id = 1
         ORDER BY `Time` ASC
     */
     return this._dataSource
@@ -58,14 +54,16 @@ export class WishHistoryQueryBuildersService {
       .leftJoinAndSelect(Character, `char`, `char.name = uwh.Name`)
       .select(`uwh.Name, uwh.Pity, uwh.Time, uwh.Type, char.icon`)
       .where(`uwh.Rarity = 5 AND uwh.Banner = '${banner}'`)
+      .andWhere(`uwh.user_id = ${userId}`)
       .orderBy(`uwh.Time`, `ASC`)
       .getRawMany();
   }
 
-  getChartValues(): Promise<IMonthBarDB[]> {
+  getChartValues(userId: number): Promise<IMonthBarDB[]> {
     /*
         SELECT SUBSTRING(Time, 1, 7) `Month`, Rarity, COUNT(*) `Total`
         FROM user_wish_history uwh 
+        WHERE user_id = 1
         GROUP BY Month, Rarity 
         ORDER BY Month, Rarity    
     */
@@ -73,6 +71,7 @@ export class WishHistoryQueryBuildersService {
       .getRepository(WishHistory)
       .createQueryBuilder('uwh')
       .select(`SUBSTRING(Time, 1, 7) 'Month', Rarity, COUNT(*) 'Total'`)
+      .where(`user_id = ${userId}`)
       .groupBy(`Month`)
       .addGroupBy(`Rarity`)
       .orderBy(`Month`, `ASC`)
