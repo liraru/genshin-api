@@ -17,7 +17,6 @@ export class WishHistoryController {
 
   @Get('volume-chart')
   public getChartValues(@Query() queryParams: { user: number }) {
-    console.log('QUERY', queryParams);
     return this._wishHistoryService.getBarChartData(queryParams.user);
   }
 }
