@@ -39,10 +39,10 @@
   "editor.find.addExtraSpaceOnTop": false,
   "editor.matchBrackets": "always",
   "editor.guides.bracketPairs": "active",
-  "javascript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
   "javascript.preferences.quoteStyle": "single",
   "prettier.configPath": ".prettierrc",
-  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "files.exclude": {
     "dist": true,
     "**/*.spec.ts": true,

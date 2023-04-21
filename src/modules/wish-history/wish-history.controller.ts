@@ -1,27 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { WishHistoryService } from './services/wish-history/wish-history.service';
 
 @Controller('/wish-history')
 export class WishHistoryController {
   constructor(private _wishHistoryService: WishHistoryService) {}
 
-  @Get()
-  public async findAll() {
-    return this._wishHistoryService.findAll();
-  }
-
   @Get('pity')
-  public getPity() {
-    return this._wishHistoryService.getPity();
+  public getPity(@Query() queryParams: { user: number }) {
+    return this._wishHistoryService.getPity(queryParams.user);
   }
 
   @Get('five-stars')
-  public getFiveStarsHistory() {
-    return this._wishHistoryService.getFiveStarHistory();
+  public getFiveStarsHistory(@Query() queryParams: { user: number }) {
+    return this._wishHistoryService.getFiveStarHistory(queryParams.user);
   }
 
-  @Get('chart')
-  public getChartValues() {
-    return this._wishHistoryService.getBarChartData();
+  @Get('volume-chart')
+  public getChartValues(@Query() queryParams: { user: number }) {
+    return this._wishHistoryService.getBarChartData(queryParams.user);
   }
 }

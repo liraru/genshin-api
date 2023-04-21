@@ -1,21 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, forkJoin, from, map } from 'rxjs';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { BANNERS, ROLL_TYPE, STANDARD_CHARACTERS } from 'src/modules/wish-history/constants';
 import { IFiveStarHistory, IFiveStarRoll } from 'src/modules/wish-history/interfaces/five-star-history.interface';
 import { IMonthBarDB, IMonthlyBarChart } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
 import { IPity } from 'src/modules/wish-history/interfaces/pity.interface';
-import { Repository } from 'typeorm';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
 
 @Injectable()
 export class WishHistoryService {
-  constructor(
-    @InjectRepository(WishHistory)
-    private _wishHistoryRepo: Repository<WishHistory>,
-    private readonly _qbService: WishHistoryQueryBuildersService
-  ) {}
+  constructor(private readonly _qbService: WishHistoryQueryBuildersService) {}
 
   private _checkFiftyWon(character: string, date: string, wonLast: boolean, banner: string): boolean {
     switch (banner) {
@@ -32,8 +26,8 @@ export class WishHistoryService {
     }
   }
 
-  private async _retrieveFiveStarsHistory(banner: string) {
-    const fiveStarPullQB = await this._qbService.getFiveStarsHistory(banner);
+  private async _retrieveFiveStarsHistory(userId: number, banner: string) {
+    const fiveStarPullQB = await this._qbService.getFiveStarsHistory(userId, banner);
     const fiveStarPulls: IFiveStarRoll[] = [];
     let lossCount = 0;
 
@@ -53,17 +47,13 @@ export class WishHistoryService {
     return fiveStarPulls.sort((a, b) => (a.date > b.date ? -1 : 1));
   }
 
-  async findAll(): Promise<WishHistory[]> {
-    return await this._wishHistoryRepo.find();
-  }
-
-  getPity(): Observable<IPity> {
+  getPity(userId: number): Observable<IPity> {
     return forkJoin({
-      char5: from(this._qbService.getCurrentPity(BANNERS.CHARACTERS, 5)),
-      char4: from(this._qbService.getCurrentPity(BANNERS.CHARACTERS, 4)),
-      weapon: from(this._qbService.getCurrentPity(BANNERS.WEAPONS, 5)),
-      standard5: from(this._qbService.getCurrentPity(BANNERS.STANDARD, 5)),
-      standard4: from(this._qbService.getCurrentPity(BANNERS.STANDARD, 4))
+      char5: from(this._qbService.getCurrentPity(userId, BANNERS.CHARACTERS, 5)),
+      char4: from(this._qbService.getCurrentPity(userId, BANNERS.CHARACTERS, 4)),
+      weapon: from(this._qbService.getCurrentPity(userId, BANNERS.WEAPONS, 5)),
+      standard5: from(this._qbService.getCurrentPity(userId, BANNERS.STANDARD, 5)),
+      standard4: from(this._qbService.getCurrentPity(userId, BANNERS.STANDARD, 4))
     }).pipe(
       map((res) => {
         return {
@@ -75,11 +65,11 @@ export class WishHistoryService {
     );
   }
 
-  getFiveStarHistory(): Observable<IFiveStarHistory> {
+  getFiveStarHistory(userId: number): Observable<IFiveStarHistory> {
     return forkJoin({
-      c: from(this._retrieveFiveStarsHistory(BANNERS.CHARACTERS)),
-      w: from(this._retrieveFiveStarsHistory(BANNERS.WEAPONS)),
-      s: from(this._retrieveFiveStarsHistory(BANNERS.STANDARD))
+      c: from(this._retrieveFiveStarsHistory(userId, BANNERS.CHARACTERS)),
+      w: from(this._retrieveFiveStarsHistory(userId, BANNERS.WEAPONS)),
+      s: from(this._retrieveFiveStarsHistory(userId, BANNERS.STANDARD))
     }).pipe(
       map((res) => {
         return {
@@ -91,8 +81,8 @@ export class WishHistoryService {
     );
   }
 
-  async getBarChartData(): Promise<IMonthlyBarChart[]> {
-    const dbData: IMonthBarDB[] = await this._qbService.getChartValues();
+  async getBarChartData(userId: number): Promise<IMonthlyBarChart[]> {
+    const dbData: IMonthBarDB[] = await this._qbService.getChartValues(userId);
     const parsed: IMonthlyBarChart[] = [];
     const months: string[] = [];
 
