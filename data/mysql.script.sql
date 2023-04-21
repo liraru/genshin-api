@@ -32,7 +32,7 @@ CREATE TABLE
 
 CREATE TABLE
   `characters` (
-    `name` VARCHAR(512) UNIQUE NOT NULL,
+    `name` VARCHAR(80) UNIQUE NOT NULL,
     `title` VARCHAR(512),
     `description` VARCHAR(500),
     `element` VARCHAR(10),
@@ -106,3 +106,75 @@ CREATE TABLE
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
   );
+
+CREATE TABLE `user_savings` (
+  `user_id` INT,
+  `interwined` INT DEFAULT 0,
+  `acquaint` INT DEFAULT 0,
+  PRIMARY KEY (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `user_abyss`(
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT,
+  `date` VARCHAR(20),
+  `version` VARCHAR(5),
+  `stars` INT,
+  `deepest_descend` VARCHAR(5),
+  `battles_fought`INT,
+  `most_defeats` INT,
+  `most_defeats_character` VARCHAR(80),
+  `strongest_stike` INT,
+  `strongest_strike_character` VARCHAR(80),
+  `most_damage_taken` INT,
+  `most_damage_taken_character` VARCHAR(80),
+  `more_elemental_burst` INT,
+  `more_elemental_burst_character` VARCHAR(80),
+  `more_elemental_skill` INT,
+  `more_elemental_skill_character` VARCHAR(80),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`most_defeats_character`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`strongest_strike_character`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`most_damage_taken_character`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`more_elemental_burst_character`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`more_elemental_skill_character`) REFERENCES `characters` (`name`) ON DELETE SET NULL
+);
+
+CREATE TABLE `user_abyss_floor` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT,
+  `abyss_id` INT,
+  `floor` INT,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`abyss_id`) REFERENCES `user_abyss` (`id`) ON DELETE SET NULL
+);
+
+CREATE TABLE `user_abyss_floor_chamber` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT,
+  `floor_id` INT,
+  `date` VARCHAR(30),
+  `stars` INT,
+  `first_chamber_character_1` VARCHAR(80),
+  `first_chamber_character_2` VARCHAR(80),
+  `first_chamber_character_3` VARCHAR(80),
+  `first_chamber_character_4` VARCHAR(80),
+  `second_chamber_character_1` VARCHAR(80),
+  `second_chamber_character_2` VARCHAR(80),
+  `second_chamber_character_3` VARCHAR(80),
+  `second_chamber_character_4` VARCHAR(80),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`floor_id`) REFERENCES `user_abyss_floor` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`first_chamber_character_1`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`first_chamber_character_2`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`first_chamber_character_3`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`first_chamber_character_4`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`second_chamber_character_1`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`second_chamber_character_2`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`second_chamber_character_3`) REFERENCES `characters` (`name`) ON DELETE SET NULL,
+  FOREIGN KEY (`second_chamber_character_4`) REFERENCES `characters` (`name`) ON DELETE SET NULL
+);
