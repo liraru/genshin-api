@@ -12,7 +12,8 @@ import { DataSource } from 'typeorm';
     UsersModule,
     WishHistoryModule,
     ImportStaticDataModule,
-    TypeOrmModule.forRoot(databaseConfig.mysql_chibiko as TypeOrmModuleOptions)
+    //TypeOrmModule.forRoot(databaseConfig.mysql_chibiko as TypeOrmModuleOpçtions)
+    TypeOrmModule.forRoot(databaseConfig.mysql_local as TypeOrmModuleOptions)
   ],
   controllers: [],
   providers: [AppService]

@@ -2,33 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as ExcelToJson from 'convert-excel-to-json';
 import * as fs from 'fs';
-import { DataSource, Repository } from 'typeorm';
+import { CONSTANTS } from 'src/constants';
 import { WishHistory } from 'src/entities/wish-history.entity';
 import { BANNERS } from 'src/modules/wish-history/constants';
-
-interface IExcelRow {
-  A: string;
-  B: string;
-  C: string;
-  D: number;
-  E: number;
-  F: number;
-  G: number;
-  H: string;
-  I: string;
-}
-
-interface IExcelRowTitle {
-  Type: string;
-  Name: string;
-  Time: string;
-  Rarity: number;
-  Pity: number;
-  Roll: number;
-  Group: number;
-  Title: string;
-  Part: string;
-}
+import { IExcelRow, IExcelRowTitle, ITypeAmount } from 'src/modules/wish-history/interfaces/excel.interface';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class AutoImportWishService {
@@ -51,10 +29,10 @@ export class AutoImportWishService {
     };
   }
 
-  private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string): WishHistory {
+  private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string, user: number): WishHistory {
     return {
       Banner: banner,
-      user_id: 1,
+      user_id: user ?? 1,
       Group: row.Group,
       Name: row.Name,
       Part: row.Part,
@@ -67,7 +45,7 @@ export class AutoImportWishService {
     };
   }
 
-  private async _importBanner(excelBannerData: IExcelRow[], banner: string) {
+  private async _importBanner(excelBannerData: IExcelRow[], banner: string, user?: number): Promise<ITypeAmount> {
     // SELECT Time FROM user_wish_history uwh WHERE Banner = 'Character Event' ORDER BY `Time` DESC LIMIT 1
     const lastPull = await this._dataSource
       .getRepository(WishHistory)
@@ -77,29 +55,37 @@ export class AutoImportWishService {
       .orderBy('lastPull.Time', 'DESC')
       .limit(1)
       .getOne();
-    
+
     const lastPullTime = lastPull?.Time;
+    let newPullsCount = 0;
     console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
 
     excelBannerData.forEach((row: IExcelRow) => {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
       if (!lastPullTime || parsed.Time > lastPullTime) {
-        console.log(`> ADDING ${parsed.Name} FROM ${banner} BANNER`);
-        this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner));
+        if (parsed.Rarity > 3) {
+          console.log(`>>> Adding ${parsed.Name.toUpperCase()} from ${banner.toUpperCase()} banner`);
+        }
+        this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
+        newPullsCount++;
       }
     });
+    return { type: banner, amount: newPullsCount };
   }
 
-  readExcel() {
-    if (fs.existsSync('excel/paimonmoe_wish_history.xlsx')) {
+  async readExcel(user?: number): Promise<ITypeAmount[]> {
+    console.clear();
+    if (fs.existsSync(CONSTANTS.EXCEL_FILE)) {
       const excelData = ExcelToJson({
-        source: fs.readFileSync('excel/paimonmoe_wish_history.xlsx'),
+        source: fs.readFileSync(CONSTANTS.EXCEL_FILE),
         header: { rows: 1 }
       });
 
-      this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS);
-      this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS);
-      this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD);
+      return Promise.all([
+        this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS, user),
+        this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS, user),
+        this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD, user)
+      ]);
     }
   }
 }

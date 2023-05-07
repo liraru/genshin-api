@@ -6,10 +6,15 @@ import { IFiveStarHistory, IFiveStarRoll } from 'src/modules/wish-history/interf
 import { IMonthBarDB, IMonthlyBarChart } from 'src/modules/wish-history/interfaces/monthly-bar-chart.interface';
 import { IPity } from 'src/modules/wish-history/interfaces/pity.interface';
 import { WishHistoryQueryBuildersService } from '../wish-history-query-builders/wish-history-query-builders.service';
+import { AutoImportWishService } from 'src/modules/wish-history/services/auto-import-wish/auto-import-wish.service';
+import { ITypeAmount } from 'src/modules/wish-history/interfaces/excel.interface';
 
 @Injectable()
 export class WishHistoryService {
-  constructor(private readonly _qbService: WishHistoryQueryBuildersService) {}
+  constructor(
+    private readonly _qbService: WishHistoryQueryBuildersService,
+    private readonly _importWishService: AutoImportWishService
+  ) {}
 
   private _checkFiftyWon(character: string, date: string, wonLast: boolean, banner: string): boolean {
     switch (banner) {
@@ -104,5 +109,10 @@ export class WishHistoryService {
     });
 
     return parsed;
+  }
+
+  async importWishExcel(user: number): Promise<ITypeAmount[]> {
+    console.log(`=== STARTING WISH EXCEL PARSE FOR USER ${user} ===`);
+    return this._importWishService.readExcel();
   }
 }
