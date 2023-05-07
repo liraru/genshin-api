@@ -64,7 +64,7 @@ export class AutoImportWishService {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
       if (!lastPullTime || parsed.Time > lastPullTime) {
         if (parsed.Rarity > 3) {
-          console.log(`>>> ADDING ${parsed.Name} FROM ${banner} BANNER`);
+          console.log(`>>> Adding ${parsed.Name.toUpperCase()} from ${banner.toUpperCase()} banner`);
         }
         this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
         newPullsCount++;
@@ -74,6 +74,7 @@ export class AutoImportWishService {
   }
 
   async readExcel(user?: number): Promise<ITypeAmount[]> {
+    console.clear();
     if (fs.existsSync(CONSTANTS.EXCEL_FILE)) {
       const excelData = ExcelToJson({
         source: fs.readFileSync(CONSTANTS.EXCEL_FILE),
