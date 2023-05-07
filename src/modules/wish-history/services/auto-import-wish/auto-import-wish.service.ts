@@ -29,10 +29,10 @@ export class AutoImportWishService {
     };
   }
 
-  private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string): WishHistory {
+  private _parseExcelRowToWishRow(row: IExcelRowTitle, banner: string, user: number): WishHistory {
     return {
       Banner: banner,
-      user_id: 1,
+      user_id: user ?? 1,
       Group: row.Group,
       Name: row.Name,
       Part: row.Part,
@@ -45,7 +45,7 @@ export class AutoImportWishService {
     };
   }
 
-  private async _importBanner(excelBannerData: IExcelRow[], banner: string): Promise<ITypeAmount> {
+  private async _importBanner(excelBannerData: IExcelRow[], banner: string, user?: number): Promise<ITypeAmount> {
     // SELECT Time FROM user_wish_history uwh WHERE Banner = 'Character Event' ORDER BY `Time` DESC LIMIT 1
     const lastPull = await this._dataSource
       .getRepository(WishHistory)
@@ -66,15 +66,14 @@ export class AutoImportWishService {
         if (parsed.Rarity > 3) {
           console.log(`>>> ADDING ${parsed.Name} FROM ${banner} BANNER`);
         }
-        this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner));
+        this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
         newPullsCount++;
       }
     });
     return { type: banner, amount: newPullsCount };
   }
 
-  async readExcel(): Promise<ITypeAmount[]> {
-    console.log('=== STARTING WISH EXCEL PARSE ===');
+  async readExcel(user?: number): Promise<ITypeAmount[]> {
     if (fs.existsSync(CONSTANTS.EXCEL_FILE)) {
       const excelData = ExcelToJson({
         source: fs.readFileSync(CONSTANTS.EXCEL_FILE),
@@ -82,9 +81,9 @@ export class AutoImportWishService {
       });
 
       return Promise.all([
-        this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS),
-        this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS),
-        this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD)
+        this._importBanner(excelData[BANNERS.CHARACTERS], BANNERS.CHARACTERS, user),
+        this._importBanner(excelData[BANNERS.WEAPONS], BANNERS.WEAPONS, user),
+        this._importBanner(excelData[BANNERS.STANDARD], BANNERS.STANDARD, user)
       ]);
     }
   }

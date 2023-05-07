@@ -112,7 +112,7 @@ export class WishHistoryService {
   }
 
   async importWishExcel(user: number): Promise<ITypeAmount[]> {
-    console.log('user: ', user);
+    console.log(`=== STARTING WISH EXCEL PARSE FOR USER ${user} ===`);
     return this._importWishService.readExcel();
   }
 }
