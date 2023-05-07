@@ -23,8 +23,10 @@ export class WishHistoryController {
 
   @Post('upload-excel')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: Express.Multer.File, @Query() queryParams: { user: number }) {
     console.log(file);
+    // TODO: Save file on directory
+    return this._wishHistoryService.importWishExcel(queryParams.user);
   }
 
   @Get('parse-excel')
