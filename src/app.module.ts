@@ -7,14 +7,18 @@ import { WishHistoryModule } from 'src/modules/wish-history/wish-history.module'
 import { AppService } from 'src/services/app.service';
 import { DataSource } from 'typeorm';
 
+function getDBConfig(host: 'local' | 'develop'): TypeOrmModuleOptions {
+  console.log(`INITIALIZING API WITH ${databaseConfig.mysql_chibiko.host.toUpperCase()} DATA`);
+  switch (host) {
+    case 'local':
+      return databaseConfig.mysql_local as TypeOrmModuleOptions;
+    case 'develop':
+      return databaseConfig.mysql_chibiko as TypeOrmModuleOptions;
+  }
+}
+
 @Module({
-  imports: [
-    UsersModule,
-    WishHistoryModule,
-    ImportStaticDataModule,
-    //TypeOrmModule.forRoot(databaseConfig.mysql_chibiko as TypeOrmModuleOpçtions)
-    TypeOrmModule.forRoot(databaseConfig.mysql_local as TypeOrmModuleOptions)
-  ],
+  imports: [UsersModule, WishHistoryModule, ImportStaticDataModule, TypeOrmModule.forRoot(getDBConfig('develop'))],
   controllers: [],
   providers: [AppService]
 })
