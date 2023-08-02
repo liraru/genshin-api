@@ -64,7 +64,11 @@ export class AutoImportWishService {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
       if (!lastPullTime || parsed.Time > lastPullTime) {
         if (parsed.Rarity > 3) {
-          console.log(`>>> Adding ${parsed.Name.toUpperCase()} from ${banner.toUpperCase()} banner`);
+          console.log(
+            `${
+              parsed.Rarity === 5 ? '>>>' : ''
+            } Adding ${parsed.Name.toUpperCase()} from ${banner.toUpperCase()} banner`
+          );
         }
         this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
         newPullsCount++;
