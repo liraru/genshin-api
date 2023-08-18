@@ -65,15 +65,20 @@ export class AutoImportWishService {
       if (!lastPullTime || parsed.Time > lastPullTime) {
         if (parsed.Rarity > 3) {
           console.log(
-            `${
-              parsed.Rarity === 5 ? '>>>' : ''
-            } Adding ${parsed.Name.toUpperCase()} from ${banner.toUpperCase()} banner`
+            `${parsed.Rarity === 5 ? '>>>' : ''} Adding ${
+              parsed.Rarity === 5 ? parsed.Name.toUpperCase() : parsed.Name
+            } from ${banner.toUpperCase()} banner`
           );
         }
         this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
         newPullsCount++;
       }
     });
+
+    if (newPullsCount !== 0) {
+      console.log(`>>> ${newPullsCount} new pulls on ${banner} banner`);
+    }
+
     return { type: banner, amount: newPullsCount };
   }
 

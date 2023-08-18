@@ -8,12 +8,12 @@ import { AppService } from 'src/services/app.service';
 import { DataSource } from 'typeorm';
 
 function getDBConfig(host: 'local' | 'develop'): TypeOrmModuleOptions {
-  console.log(`INITIALIZING API WITH ${databaseConfig.mysql_chibiko.host.toUpperCase()} DATA`);
+  console.log(`INITIALIZING API WITH ${databaseConfig.mysql_server.host.toUpperCase()} DATA`);
   switch (host) {
     case 'local':
       return databaseConfig.mysql_local as TypeOrmModuleOptions;
     case 'develop':
-      return databaseConfig.mysql_chibiko as TypeOrmModuleOptions;
+      return databaseConfig.mysql_server as TypeOrmModuleOptions;
   }
 }
 

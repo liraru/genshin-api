@@ -28,9 +28,9 @@ export class StaticDataService {
       constellation: bowja.constellation,
       weapontype: bowja.weapontype,
       substat: bowja.substat,
-      icon: bowja.images.icon,
-      icon_item: `${STATIC_DATA_CONSTANTS.BOWJA_GALLERY_PATH}/${STATIC_DATA_CONSTANTS.ICON_ITEM_PATH}/${bowja.images.nameiconcard}`,
-      icon_party: bowja.images.sideicon,
+      icon: bowja.images?.icon || '',
+      icon_item: `${STATIC_DATA_CONSTANTS.BOWJA_GALLERY_PATH}/${STATIC_DATA_CONSTANTS.ICON_ITEM_PATH}/${bowja.images?.nameiconcard || ''}`,
+      icon_party: bowja.images?.sideicon || '',
       gacha_splash: ``,
       gacha_multi: ``
     };
