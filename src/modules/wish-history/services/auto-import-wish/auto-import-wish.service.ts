@@ -58,16 +58,17 @@ export class AutoImportWishService {
 
     const lastPullTime = lastPull?.Time;
     let newPullsCount = 0;
-    console.log(`LAST PULL FROM ${banner} AT ${lastPullTime}`);
+    console.log(` ================== ${banner} ================== `);
+    console.log(`Last pull: ${lastPullTime}`);
 
     excelBannerData.forEach((row: IExcelRow) => {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
       if (!lastPullTime || parsed.Time > lastPullTime) {
         if (parsed.Rarity > 3) {
           console.log(
-            `${parsed.Rarity === 5 ? '>>>' : ''} Adding ${
+            `${parsed.Rarity === 5 ? '>>> ' : ''}${
               parsed.Rarity === 5 ? parsed.Name.toUpperCase() : parsed.Name
-            } from ${banner.toUpperCase()} banner`
+            }`
           );
         }
         this._wishHistoryRepo.insert(this._parseExcelRowToWishRow(parsed, banner, user));
@@ -76,7 +77,7 @@ export class AutoImportWishService {
     });
 
     if (newPullsCount !== 0) {
-      console.log(`>>> ${newPullsCount} new pulls on ${banner} banner`);
+      console.log(`### ${newPullsCount} new pulls ###`);
     }
 
     return { type: banner, amount: newPullsCount };
