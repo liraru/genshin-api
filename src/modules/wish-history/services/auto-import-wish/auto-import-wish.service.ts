@@ -58,8 +58,8 @@ export class AutoImportWishService {
 
     const lastPullTime = lastPull?.Time;
     let newPullsCount = 0;
-    console.log(` ================== ${banner} ================== `);
-    console.log(`Last pull: ${lastPullTime}`);
+    console.log(`================== ${banner.replace(` Event`, ` banner`)} ================== `);
+    console.log(` Last pull: ${lastPullTime}`);
 
     excelBannerData.forEach((row: IExcelRow) => {
       const parsed: IExcelRowTitle = this._excelColumnToExcelTitle(row);
